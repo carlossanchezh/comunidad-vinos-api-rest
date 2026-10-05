@@ -472,6 +472,11 @@ Gestiona todos los errores relacionados con usuarios, vinos de usuario y seguimi
 │
 ├── .gitignore                                                       # Archivos y carpetas ignorados por Git
 ├── HELP.md                                                          # Documentación generada por Spring Initializr
+├── INSTRUCTIONS.md                                                  # Instrucciones de instalación y ejecución del proyecto
 ├── README.md                                                        # Descripción del proyecto 
 └── pom.xml                                                          # Configuración Maven: dependencias y plugins
 ```
+
+## Instalación y ejecución
+
+Ver [INSTRUCTIONS.md](INSTRUCTIONS.md)
