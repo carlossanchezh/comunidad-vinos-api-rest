@@ -1,0 +1,46 @@
+name: comunidadvinos
+
+services:
+  db:
+    image: mysql:8
+    container_name: comunidadvinos-db
+    networks:
+      - comunidad-net
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: comunidadvinos
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/comunidadvinos.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p1234"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    image: carlossanchezh/comunidadvinos-app:latest
+    container_name: comunidadvinos-app
+    networks:
+      - comunidad-net
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: 1234
+    ports:
+      - "9000:9000"
+
+networks:
+  comunidad-net:
+    driver: bridge
+
+volumes:
+  db_data:

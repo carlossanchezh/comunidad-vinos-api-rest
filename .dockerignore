@@ -1,0 +1,10 @@
+target/
+.git/
+.idea/
+*.iml
+*.log
+database/
+HELP.md
+INSTRUCTIONS.md
+README.md
+
