@@ -377,7 +377,14 @@ Gestiona todos los errores relacionados con usuarios, vinos de usuario y seguimi
 - Persistencia: **Spring Data JPA**
 - Enlaces hipermedia en las respuestas: **Spring HATEOAS**
 - Base de datos relacional: **MySQL**
+- Despliegue y orquestación: **Docker** y **Docker Compose**
 - Gestión de dependencias y ciclo de vida del proyecto: **Maven**
+
+## Imagen de la aplicación
+
+La imagen de la aplicación ([carlossanchezh/comunidadvinos-app](https://hub.docker.com/r/carlossanchezh/comunidadvinos-app)) está publicada en Docker Hub.
+
+Consulta la sección de [Instalación y ejecución](#instalación-y-ejecución) para más detalles sobre el despliegue con Docker.
 
 ## Estructura del proyecto
 
@@ -470,13 +477,18 @@ Gestiona todos los errores relacionados con usuarios, vinos de usuario y seguimi
 │       └── java/es/upm/sos/comunidadvinos/
 │           └── ComunidadvinosApplicationTests.java                  # Test de carga del contexto de Spring
 │
+├── .dockerignore                                                    # Archivos y carpetas excluidos del contexto de Docker
 ├── .gitignore                                                       # Archivos y carpetas ignorados por Git
+├── Dockerfile                                                       # Imagen Docker de la aplicación
 ├── HELP.md                                                          # Documentación generada por Spring Initializr
 ├── INSTRUCTIONS.md                                                  # Instrucciones de instalación y ejecución del proyecto
 ├── README.md                                                        # Descripción del proyecto 
+├── docker-compose.yml                                               # Orquestación de la app y MySQL
 └── pom.xml                                                          # Configuración Maven: dependencias y plugins
 ```
 
 ## Instalación y ejecución
 
-Ver [INSTRUCTIONS.md](INSTRUCTIONS.md)
+El proyecto puede ejecutarse de dos formas, de manera **Local** o utilizando **Docker**.
+
+Consulta [INSTRUCTIONS.md](INSTRUCTIONS.md) para las instrucciones detalladas de instalación, ejecución y uso de la API.
