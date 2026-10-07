@@ -1,6 +1,14 @@
 # Instrucciones de instalación y ejecución
 
-## Requisitos
+Este proyecto puede ejecutarse de dos formas: **en local** (con los requisitos necesarios instalados en tu máquina) o **con Docker** (sin necesidad de instalar nada más que Docker Desktop).
+
+- Para la **ejecución local**, sigue las secciones [Requisitos local](#requisitos-local), [Instalación para ejecución local](#instalación-para-ejecución-local) y [Ejecución local](#ejecución-local).
+
+- Para la **ejecución con Docker**, sigue las secciones [Requisitos con Docker](#requisitos-con-docker), [Instalación para ejecución con Docker](#instalación-para-ejecución-con-docker) y [Ejecución con Docker](#ejecución-con-docker).
+
+- Para saber **cómo usar la API** una vez arrancada, consulta la sección [Uso de la API](#uso-de-la-api) y los [Casos de uso](#casos-de-uso).
+
+## Requisitos local
 
 - **Java** 21 o superior
 
@@ -10,7 +18,7 @@
 
 - **IDE** recomendado
 
-## Instalación
+## Instalación para ejecución local
 
 ### 1. Clonar el repositorio
 
@@ -41,7 +49,7 @@ El repositorio incluye `database/comunidadvinos.sql`, un dump con:
 - La estructura de las tablas (`usuarios`, `vinos`, `uvas`, `usuario_vino`, `vino_uva`, `seguimientos`).
 - Datos de ejemplo (9 usuarios, 21 vinos, 5 uvas, etc.).
 
-Importa el script desde la raiz del proyecto:
+Importa el script desde la raíz del proyecto:
 
 ```bash
 mysql -u root -p < database/comunidadvinos.sql
@@ -101,7 +109,7 @@ spring.datasource.password=tu_contraseña
 
 > **No compartas esta versión** si contiene credenciales reales. Es solo para uso local.
 
-## Ejecución
+## Ejecución local
 
 ### Con Maven (desde la línea de comandos)
 
@@ -149,6 +157,106 @@ mvn clean compile
 
 3. Ejecuta la clase principal `ComunidadvinosApplication.java` (botón Run).
 
+## Requisitos con Docker
+
+- **Docker Desktop**
+
+## Instalación para ejecución con Docker
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/carlossanchezh/comunidad-vinos-api-rest.git
+```
+
+> Si no usas Git, descarga el `.zip` del proyecto y descomprímelo en una carpeta local.
+
+## Ejecución con Docker
+
+### Levantar los contenedores
+
+Descarga la imagen de la aplicación ([carlossanchezh/comunidadvinos-app](https://hub.docker.com/r/carlossanchezh/comunidadvinos-app)) desde Docker Hub:
+
+```bash
+docker pull carlossanchezh/comunidadvinos-app:latest
+```
+
+Una vez descargada, levanta los contenedores de la aplicación y de MySQL:
+
+```bash
+docker compose up
+```
+
+Para ejecutarlo en segundo plano:
+
+```bash
+docker compose up -d
+```
+
+El proceso que seguirá Docker será el siguiente:
+
+1. Descarga la imagen de la aplicación desde Docker Hub.
+2. Descarga la imagen oficial de MySQL 8.
+3. Crea la red interna `comunidad-net` y el volumen `db_data`.
+4. Arranca el contenedor MySQL e importa automáticamente el dump `database/comunidadvinos.sql`.
+5. Espera a que MySQL esté listo y arranca el contenedor de la aplicación.
+
+> Si no tienes conexión a Docker Hub o la imagen no está disponible, `docker compose up` construirá la imagen de la aplicación a partir del `Dockerfile` como alternativa.
+
+Si prefieres **forzar la construcción** de la imagen en lugar de descargarla de Docker Hub:
+
+```bash
+docker compose up --build
+```
+
+Para ejecutarlo en segundo plano:
+
+```bash
+docker compose up --build -d
+```
+
+### Ver los logs de los contenedores
+
+Muestra los logs del contenedor de la app en tiempo real:
+
+```bash
+docker compose logs -f app
+```
+
+Muestra los logs del contenedor de MySQL en tiempo real:
+
+```bash
+docker compose logs -f db
+```
+
+> Solo es necesario si has levantado los contenedores en segundo plano (`docker compose up --build -d`).
+
+### Ver el estado de los contenedores
+
+Muestra los contenedores del proyecto, su estado y los puertos expuestos:
+
+```bash
+docker compose ps
+```
+
+### Detener los contenedores
+
+Para los contenedores sin borrar los datos:
+
+```bash
+docker compose down
+```
+
+Los datos se conservan en el volumen `db_data`. La próxima vez que levantes, seguirán ahí.
+
+Para parar los contenedores y **borrar también el volumen**:
+
+```bash
+docker compose down -v
+```
+
+> Es lo que usarías si quieres volver a cargar la base de datos a partir de `database/comunidadvinos.sql`.
+
 ## Uso de la API
 
 Una vez arrancada la aplicación, la API queda escuchando en el puerto **9000** con el contexto **`/api/v1`**. Todas las peticiones deben ir precedidas por esa base.
@@ -166,7 +274,7 @@ server.servlet.context-path=/api/v1
 http://localhost:9000 /api/v1 /usuarios /1
 └──────┬─────────────┘└──┬───┘ └──┬───┘ └┬┘
        │                 │        │      │
-     Host y puerto    Contexto  Recurso  ID
+  Host y puerto       Contexto  Recurso  ID
 ```
 
 - **Host y puerto**: `localhost:9000`
@@ -195,7 +303,7 @@ Puedes usar cualquiera de estas herramientas:
 
 ## Casos de uso
 
-A continuación se muestran ejemplos de las operaciones con json.
+A continuación se muestran ejemplos de las operaciones con JSON.
 
 > Los ejemplos asumen que la base de datos contiene los datos de ejemplo del dump `comunidadvinos.sql`. Si ejecutas operaciones que modifican o eliminan recursos (PUT, DELETE), los ejemplos posteriores pueden fallar. Para volver al estado inicial, reimporta el `.sql`
 
@@ -253,7 +361,7 @@ curl -X POST http://localhost:9000/api/v1/usuarios \
 curl http://localhost:9000/api/v1/usuarios
 ```
 
-**Respuesta esperada**: `200 OK` con la representación paginada de los usuarios (5 usuarios por pagina por defecto).
+**Respuesta esperada**: `200 OK` con la representación paginada de los usuarios (5 usuarios por página por defecto).
 
 **Con filtro por nombre**:
 
@@ -261,14 +369,14 @@ curl http://localhost:9000/api/v1/usuarios
 curl "http://localhost:9000/api/v1/usuarios?filtro=Mar"
 ```
 
-**Respuesta esperada**: `200 OK` con la representación paginada de los usuarios con el filtro aplicado a su nombre (5 usuarios por pagina por defecto).
+**Respuesta esperada**: `200 OK` con la representación paginada de los usuarios con el filtro aplicado a su nombre (5 usuarios por página por defecto).
 
 **Con paginación personalizada**:
 
 ```bash
 curl "http://localhost:9000/api/v1/usuarios?page=0&size=3"
 ```
-**Respuesta esperada**: `200 OK` con la representación paginada de los usuarios ajustado a 3 usuarios por pagina.
+**Respuesta esperada**: `200 OK` con la representación paginada de los usuarios ajustada a 3 usuarios por página.
 
 #### 3. Obtener un usuario concreto
 
